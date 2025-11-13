@@ -135,11 +135,11 @@ Where:
 
 ### Results and Analysis
 
-This experiment establishes the relationship between training dataset size and diagnostic performance, providing empirical bounds for data efficiency in autoencoder-based anomaly detection. Our results show that diagnostic performance exhibits logarithmic scaling with training data size, with diminishing marginal returns beyond a critical threshold of approximately 75 samples per trajectory.
+Performance improves logarithmically with training data size, with diminishing returns beyond ~75 samples per trajectory.
 
 ![Training Scaling Results](artifacts/docs/training_scaling_accuracy_boxplot.png)
 
-*Training data scaling analysis across 21 configurations (1-100 samples per trajectory). Shows boxplot distribution of accuracy across all 3 trajectories and 10 test batches, demonstrating logarithmic performance scaling relationship.*
+*Accuracy vs training data size (1-100 samples per trajectory).*
 
 **Key Findings**:
 - Minimum effective training size: ~25 samples per trajectory
@@ -196,17 +196,17 @@ python src/experiment_1.py --config config.yaml
 
 ### Results and Analysis
 
-This experiment conducts comprehensive parameter space optimization across 360 configurations to establish Pareto-optimal uncertainty thresholds. The analysis reveals that application-specific uncertainty threshold selection significantly impacts the fundamental trade-off between error catch rate (safety) and automation rate (efficiency), with distinct optimal regions for different industrial applications.
+Tested 360 configurations to find optimal uncertainty thresholds balancing safety (error catch rate) vs efficiency (workload).
 
 ![Uncertainty Optimization Heatmap](artifacts/docs/error_catch_rate_seed_size_25.png)
 
-*Error catch rate heatmap for seed_size=25 across 120 configurations (3 base multipliers × 40 uncertainty multipliers). Shows percentage of base autoencoder errors successfully flagged as uncertain, optimized for safety-critical applications.*
+*Error catch rate for different uncertainty thresholds (seed_size=25).*
 
-**Selection Logic**: For each training size, we identify three optimal configurations:
+Three optimal strategies identified for each training size:
 
 ![Uncertainty Selection Strategy](artifacts/docs/rankplot_seed_size_25_base_1.00_2lines.png)
 
-*Optimization strategy selection for seed_size=25, base_multiplier=1.00. Compares best_err (safety-focused) vs best_eff (productivity-focused) strategies across 40 uncertainty multiplier values, showing trade-off between error catch rate and workload efficiency.*
+*Trade-off between safety-focused (best_err) vs productivity-focused (best_eff) strategies.*
 
 **Key Findings**:
 - **Safety-critical applications**: Use best_err strategy (higher uncertainty multipliers)
@@ -268,11 +268,11 @@ python src/experiment_2.py --config config.yaml
 
 ### Results and Analysis
 
-This experiment evaluates the temporal evolution of system performance under different human-in-the-loop learning paradigms. The analysis examines three key aspects: cumulative automation rate, human feedback demand, and prediction accuracy improvement over time. Results show that continuous learning policies, particularly the Combined approach, exhibit statistically significant performance improvements over static baselines, with cumulative benefits increasing over extended operational periods.
+Continuous learning policies show significant performance improvements over static baselines, with the Combined approach performing best.
 
 ![Policy Comparison Results](artifacts/docs/policy_comparison_seed_size_25_unc_1.085_mode_accumulated.png)
 
-*Policy performance comparison for seed_size=25, uncertainty_multiplier=1.085, accumulated feedback mode. Shows cumulative automated samples, human feedback demand, and correct predictions vs Static baseline across 10 operational batches.*
+*Policy comparison over 10 batches (seed_size=25, accumulated feedback mode).*
 
 **Key Insights**:
 - **Static baseline**: Performance degrades over time due to distribution drift
@@ -365,40 +365,16 @@ C_{error} &= N_{FP} \times C_{FP} + N_{FN} \times C_{FN}
 Where:
 - $t_{maint}$: Maintenance time per false positive (60 min)
 - $v$: Value of finished product (€20/unit)
-- $\tau$: Production time per unit (12 min/unit)
-
-### Experimental Design and Configuration Selection
-
-**Configuration Selection Methodology**: The economic analysis employs three distinct analytical approaches, each designed with specific configuration selections to isolate and examine different economic factors while minimizing confounding variables.
-
-**1. Economic Landscape Analysis - Complete Parameter Space**
-- **Configuration Scope**: All 72 experimental configurations from Experiment 3
-- **Research Rationale**: Comprehensive analysis requires examination of the entire parameter space to identify global cost-performance trade-offs and establish complete economic landscape mapping
-- **Methodological Justification**: This approach ensures no optimal configurations are overlooked and provides robust statistical foundation for economic decision-making across all possible system configurations
-
-**2. Seed Size Impact Analysis - Controlled Comparison**
-- **Selected Configuration**: Combined policy, uncertainty_multiplier=1.085, accumulated feedback mode
-- **Research Rationale**: The Combined policy represents the most sophisticated learning strategy, demonstrating maximum potential for operational improvement over time
-- **Fixed Parameters Justification**: Using identical uncertainty_multiplier (1.085) and feedback mode (accumulated) across all seed sizes eliminates confounding effects, isolating seed size impact on operational costs
-- **Seed Size Comparison**: 25 vs 50 vs 100 samples provides clear demonstration of how initial model quality affects operational error rates and costs
-
-**3. Human Factors Analysis - Representative Configuration**
-- **Selected Configuration**: seed_size=50, uncertainty_multiplier=1.085, Feedback policy only
-- **Research Rationale**: Feedback policy selected as the most human-dependent strategy, maximizing sensitivity to cognitive load variations
-- **Median Parameters Justification**: seed_size=50 represents the middle configuration, avoiding extreme cases that might mask cognitive effects
-- **Single Policy Focus**: Isolating one policy type prevents policy-specific effects from confounding cognitive load measurements
-- **Cognitive Parameter Range**: Expert-to-novice skill spectrum (10 levels) provides comprehensive assessment of operator expertise impact on economic outcomes
-
-**Methodological Validity**: Each analysis type employs targeted configuration selection to address specific research questions while controlling for variables that could obscure the phenomena under investigation. This approach ensures clear causal attribution between configuration parameters and economic outcomes.
+- $\tau$: Production time per unit (11 min/unit)
 
 ### Analysis Types
 
 #### 1. Economic Landscape Analysis
-This analysis provides a comprehensive economic assessment across all 72 experimental configurations from Experiment 3, evaluating total cost and terminal accuracy to establish the complete cost-performance landscape. The results quantify significant economic differentiation between HIL-CBM policies, establishing distinct cost-accuracy trade-off frontiers for industrial deployment decisions.
+Compares costs and accuracy across all 72 configurations to identify optimal policies for different scenarios.
 
 ![Economic Landscape](artifacts/docs/economic_landscape_cost_heatmap.png)
 
-*Complete cost analysis across all 72 HIL-CBM configurations: 3 seed sizes × 3 optimal uncertainty multipliers × 4 policies × 2 feedback modes, calculated using cognitive load-based cost model with fixed parameters (t_feed=0.5min, γ=0.3, δ=0.04).*
+*Cost comparison across all 72 configurations.*
 
 **Selection Logic**: We analyze the complete experimental space (all Experiment 3 configurations) to identify:
 - **Lowest cost configurations**: Minimum economic investment across all policies
@@ -406,17 +382,11 @@ This analysis provides a comprehensive economic assessment across all 72 experim
 - **Most efficient configurations**: Best accuracy-per-euro ratio using cumulative 10-batch costs
 
 #### 2. Seed Size Impact Analysis
-This analysis examines how initial model quality (determined by seed size) affects operational costs over time. The results demonstrate that better-trained models (higher seed sizes) achieve lower cumulative costs through reduced error rates, with cost differences accumulating across operational batches.
+Shows how initial training data size affects operational costs. Better-trained models (higher seed sizes) achieve lower cumulative costs through reduced errors.
 
 ![Seed Size Impact Analysis](artifacts/docs/training_investment_analysis.png)
 
-*Seed size impact analysis using SPECIFIC CONFIGURATION: Combined policy, uncertainty_multiplier=1.085 (fixed across all seed sizes), accumulated feedback mode. Compares seed_size=25 vs 50 vs 100 showing cumulative operational cost progression across 10 batches.*
-
-**Analysis Logic**:
-- **Early batches**: Cost differences emerge due to varying error rates across seed sizes
-- **Middle batches**: Better-trained models demonstrate operational advantages through fewer errors
-- **Later batches**: Cumulative cost benefits of higher seed sizes become evident
-- **Cost divergence**: Models with different seed sizes show different operational cost trajectories
+*Cumulative costs over 10 batches for different seed sizes (Combined policy, accumulated mode).*
 
 **Economic Insight**:
 ```math
@@ -424,7 +394,7 @@ This analysis examines how initial model quality (determined by seed size) affec
 ```
 
 #### 3. Human Factors Analysis
-This analysis provides a quantitative assessment of how operator cognitive capabilities impact optimal feedback strategy selection, incorporating established cognitive load theory into industrial decision-making frameworks. The results establish that operator expertise level serves as a critical determinant for feedback strategy optimization, with statistically significant cost differentials between batch and accumulated approaches.
+Tests how operator skill level affects feedback strategy performance using cognitive load modeling.
 
 **Cognitive Parameter Modeling**:
 ```math
@@ -435,11 +405,9 @@ t_{feed} &= 0.25 + \text{skill\_factor} \times 0.6 \text{ (expert: 0.25, novice:
 \end{cases}
 ```
 
-**Theoretical Integration**: Expert operators demonstrate minimal performance difference between feedback modes due to efficient cognitive task-switching capabilities, while novice operators achieve optimal performance through batch feedback strategies that minimize cognitive overhead associated with context switching and working memory limitations, particularly evident in later operational batches (6-10).
-
 ![Human Factors Analysis](artifacts/docs/human_factors_cognitive_analysis.png)
 
-*Human factors analysis using SPECIFIC CONFIGURATION: seed_size=50, uncertainty_multiplier=1.085, Feedback policy only. Compares 10 skill levels from Expert (Level 1: t_feed=0.25min, γ=0.05, δ=0.015) to Novice (Level 10: t_feed=0.85min, γ=0.65, δ=0.085). Shows total cost difference (batch - accumulated) over complete 10-batch operational period.*
+*Cost difference between batch vs accumulated feedback for different operator skill levels.*
 
 **Key Cognitive Load Findings**:
 - **Expert operators**: Minimal cost difference between feedback modes (accumulated mode slightly favored)
