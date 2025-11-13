@@ -1,6 +1,6 @@
-# Human-in-the-Loop Condition-Based Monitoring (HIL-CBM) Framework
+# HIL-CBM Framework for Cobots
 
-This repository contains the complete experimental implementation for evaluating human-in-the-loop condition-based monitoring systems using Conv1D autoencoder neural networks with uncertainty quantification and cognitive load-based economic analysis.
+Human-in-the-Loop Condition-Based Monitoring using collaborative robot sensor data. This repository contains the experimental implementation using Conv1D autoencoder neural networks with uncertainty quantification and cognitive load-based economic analysis.
 
 ## Research Overview
 
@@ -504,25 +504,3 @@ results/
     └── economic_analysis_summary.txt           # Statistical summary
 ```
 
-## Key Research Contributions
-
-### 1. Systematic Training Data Analysis
-- Quantified relationship between training investment and diagnostic capability
-- Established minimum training requirements (25 samples) for reliable operation
-- Demonstrated diminishing returns beyond 75 samples per trajectory
-
-### 2. Uncertainty Quantification Framework
-- Novel 3-zone classification system optimizing automation-human balance
-- Application-specific threshold optimization (safety vs efficiency)
-- Comprehensive parameter space exploration (360 configurations)
-
-### 3. Policy-Based Retraining Evaluation
-- Systematic comparison of human-in-the-loop learning strategies
-- Demonstrated cumulative benefits of continuous learning (20-40% improvement)
-- Quantified temporal evolution of system performance
-
-### 4. Economic Decision Framework
-- Cognitive load-based cost model incorporating human factors
-- Quantified impact of seed size on operational cost trajectories
-- Practical decision support framework for industrial implementation
-- Human expertise factor in feedback strategy optimization
