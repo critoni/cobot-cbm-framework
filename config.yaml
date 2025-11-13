@@ -1,0 +1,81 @@
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  data_stream: "data/stream"
+  results: "results"
+  models: "artifacts/models"
+  figures: "artifacts/figures"
+
+global:
+  seed: 42
+  n_timesteps: 204
+  n_variables: 21
+  trajectories: ["PAP1", "PAP2", "PAP3"]
+  batch_size: 100
+  n_batches: 10
+
+data_files:
+  train:
+    - "data_1_PAP1_1000.csv"
+    - "data_1_PAP2_1000.csv"
+    - "data_1_PAP3_1000.csv"
+  test:
+    - "data_1_PAP1.csv"
+    - "data_1_PAP2.csv"
+    - "data_1_PAP3.csv"
+    - "data_1_PAP1_bottle.csv"
+    - "data_1_PAP2_bottle.csv"
+    - "data_1_PAP3_bottle.csv"
+    - "data_1_PAP1_random.csv"
+    - "data_1_PAP3_random.csv"
+    - "data_1_PAP3_acc_band.csv"
+
+preprocessing:
+  crop_zero_rows: true
+  seed_size: 100
+  sample_rate: 1.0
+  hold_out: true
+
+model:
+  filters: [32, 16]
+  kernel_size: 11
+  strides: 2
+  dropout_rate: 0.1
+  learning_rate: 0.001
+  epochs: 50
+  batch_size: 128
+  patience: 5
+  shuffle: false
+  validation_split: 0.1
+  min_samples_for_validation: 10
+
+experiment_1:
+  training_sizes: [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+
+experiment_2:
+  training_sizes: [25, 50, 100]
+  base_multipliers: [0.95, 1.00, 1.05]
+  uncertainty_multipliers:
+    start: 1.005
+    end: 1.200
+    step: 0.005
+
+experiment_3:
+  selected_multipliers_csv: "results/experiment_2/selected_multipliers_base_1.00.csv"
+
+experiment_4:
+  costs:
+    C_w: 1.0             # €/min - operator wage (canonical value)
+    t_maint: 60          # min - maintenance time per false alarm
+    tau: 11              # min/unit - production time per unit
+    v: 20                # €/unit - value of finished product
+    t_walk: 3            # min/movement - time to reach and return from interface
+
+computation:
+  use_gpu: false
+  cpu_threads: 4
+  max_workers: 20
+  model_workers: 1
+
+logging:
+  level: "INFO"
